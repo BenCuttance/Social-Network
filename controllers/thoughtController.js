@@ -13,6 +13,7 @@ module.exports = {
     async getSingleThought(req, res) {
         try {
             const thought = await Thought.findOne({ _id: req.params.thoughtId })
+          
 
             if (!thought) {
                 return res.status(404).json({ message: 'No thought with that ID' })
@@ -78,14 +79,53 @@ module.exports = {
                 { new: true }
             )
 
-            if (!user){
+            if (!user) {
                 return res
-                .status(404)
-                .json({ message: 'Thought deleted but no user with this id!' });
+                    .status(404)
+                    .json({ message: 'Thought deleted but no user with this id!' });
             }
             res.json({ message: 'Thought successfully deleted!' });
         } catch (err) {
-          res.status(500).json(err);
+            res.status(500).json(err);
         }
+    },
+
+    async createReaction(req, res) {
+        try {
+            const thought = await Thought.findOneAndUpdate(
+                { _id: req.params.thoughtId },
+                { $addToSet: {reactions: req.body} },
+                // { $addToSet: { reactions: reactions._id } },
+                { runValidators: true, new: true }
+            )
+            if (!thought){
+                return res.status(404).json({message: 'No thought with this id'})
+            }
+            
+            res.json({ message: 'reaction added!' })
+        } catch (err){
+            res.status(500).json(err)
+            console.log(err)
         }
+        },
+
+    async deleteReaction (req, res){
+        try {
+            
+            const thought = await Thought.findOneAndUpdate(
+                { _id: req.params.thoughtId },
+                { $pull: { reactions: { reactionId: req.params.reactionId } } },
+                { runValidators: true, new: true }
+            )
+
+            if (!thought){
+                return res.status(404).json({message: 'No thought with this ID'})
+            }
+            res.json(thought)
+            console.log('boop')
+        } catch (err) {
+            res.status(500).json(err);
+           
+          }
     }
+}
