@@ -1,3 +1,5 @@
+// Index file to consolidate and export models
+
 const User = require('./user')
 const Thought = require('./thought')
 const Reaction = require('./reaction')

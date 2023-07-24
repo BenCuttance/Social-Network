@@ -1,6 +1,7 @@
 const db = require('../config/connection');
 const { User } = require('../models');
 
+// Seeded data for demostration and testing
 const users = [
     {
         username: "Ben",
